@@ -1,5 +1,8 @@
 // your JS code here
 const output = document.getElementById("output");
+const loading = document.getElementById("loading");
+const errorDiv = document.getElementById("error");
+const btn = document.getElementById("download-images-button");
 
 const images = [
   { url: "https://picsum.photos/id/237/200/300" },
@@ -18,20 +21,22 @@ function downloadImage(url) {
 }
 
 function downloadImages() {
-  output.innerHTML = `<p>Loading...</p>`; // loading spinner text (you can replace with spinner icon)
+  output.innerHTML = "";
+  errorDiv.innerHTML = "";
+  loading.style.display = "block"; // show loading
 
   Promise.all(images.map(imgObj => downloadImage(imgObj.url)))
     .then(downloadedImages => {
-      output.innerHTML = ""; // clear loading
-
+      loading.style.display = "none"; // hide loading
       downloadedImages.forEach(img => {
         output.innerHTML += `<img src="${img.src}" width="200" height="200" style="margin:5px;" />`;
       });
     })
     .catch(error => {
-      output.innerHTML = `<p style="color:red;">Error: ${error}</p>`;
+      loading.style.display = "none";
+      errorDiv.innerHTML = `Error: ${error}`;
     });
 }
 
-// Call function (or use button if you want)
-downloadImages();
+// ✅ Attach event listener instead of auto-calling
+btn.addEventListener("click", downloadImages);
